@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linked List</title>
+    <script defer src="main.js"></script>
+  </head>
+
+  <body>
+    <div class="layout">
+      <div class="header">
+        <span class="badge">Data Structure</span>
+        <h1>Linked List</h1>
+        <p class="description">
+          Interact with a singly linked list. Add, remove, and query nodes in
+          real time.
+        </p>
+      </div>
+
+      <div class="state-card">
+        <p class="label">Current List</p>
+        <div id="list-state" class="state-box">null</div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <p class="label">Mutate</p>
+          <div class="control-group">
+            <button id="btn-append">Append</button>
+            <input id="append-val" type="text" placeholder="Value" />
+          </div>
+          <div class="control-group">
+            <button id="btn-prepend">Prepend</button>
+            <input id="prepend-val" type="text" placeholder="Value" />
+          </div>
+          <div class="control-group">
+            <button id="btn-insert">Insert At</button>
+            <input
+              id="insert-index"
+              type="number"
+              placeholder="Index"
+              min="0"
+            />
+            <input id="insert-val" type="text" placeholder="Value" />
+          </div>
+          <div class="control-group">
+            <button id="btn-remove">Remove At</button>
+            <input
+              id="remove-index"
+              type="number"
+              placeholder="Index"
+              min="0"
+            />
+          </div>
+          <div class="control-group">
+            <button id="btn-pop" class="btn-danger">Pop head</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p class="label">Query</p>
+          <div class="control-group">
+            <button id="btn-at">At</button>
+            <input id="at-index" type="number" placeholder="Index" min="0" />
+          </div>
+          <div class="control-group">
+            <button id="btn-contains">Contains</button>
+            <input id="contains-val" type="text" placeholder="Value" />
+          </div>
+          <div class="control-group">
+            <button id="btn-find">Find Index</button>
+            <input id="find-val" type="text" placeholder="Value" />
+          </div>
+          <div class="control-group">
+            <button id="btn-size">Size</button>
+          </div>
+          <div class="control-group">
+            <button id="btn-tail">Tail</button>
+          </div>
+          <div id="query-result" class="query-result hidden"></div>
+        </div>
+      </div>
+      <div id="error-msg" class="error-msg hidden"></div>
+    </div>
+  </body>
+</html>
