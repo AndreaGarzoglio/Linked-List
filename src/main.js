@@ -1,4 +1,5 @@
 import { LinkedList } from "./index.js";
+import { LINKEDLIST_SOURCE } from "./annotated-source.js";
 
 const STORAGE_KEY = "linked-list-state";
 
@@ -51,19 +52,21 @@ function typeWriter(el, text, { speed = 22, onTick } = {}) {
   typingTimers.set(el, timer);
 }
 
-const MAX_LOG_LINES = 6;
+const MAX_LOG_LINES = 20;
 
+// Newest command goes on the left; the row scrolls horizontally and older
+// entries drop off the right once MAX_LOG_LINES is exceeded.
 function logLine(text, type = "ok") {
   const line = document.createElement("div");
   line.className = type === "error" ? "log-line error" : "log-line";
-  log.appendChild(line);
+  log.prepend(line);
 
   while (log.children.length > MAX_LOG_LINES) {
-    log.removeChild(log.firstElementChild);
+    log.removeChild(log.lastElementChild);
   }
 
-  typeWriter(line, text, { onTick: () => (log.scrollTop = log.scrollHeight) });
-  log.scrollTop = log.scrollHeight;
+  typeWriter(line, text, { onTick: () => (log.scrollLeft = 0) });
+  log.scrollLeft = 0;
 }
 
 function updateState() {
@@ -179,6 +182,33 @@ document.getElementById("btn-find").addEventListener("click", () => {
   const v = val("find-val");
   if (!v) return showError("findIndex: enter a value.", ["find-val"]);
   showQuery(`findIndex("${v}")`, list.findIndex(v));
+});
+
+// ── "How it works" modal ──
+const howModal = document.getElementById("how-modal");
+const howModalCode = document.getElementById("how-modal-code");
+
+function renderCode(code) {
+  howModalCode.replaceChildren();
+  code.split("\n").forEach((line) => {
+    const lineEl = document.createElement("div");
+    lineEl.className = line.trim().startsWith("//")
+      ? "code-line comment"
+      : "code-line";
+    lineEl.textContent = line.length ? line : " ";
+    howModalCode.appendChild(lineEl);
+  });
+}
+
+document.getElementById("btn-how").addEventListener("click", () => {
+  renderCode(LINKEDLIST_SOURCE);
+  howModal.showModal();
+});
+document
+  .getElementById("how-modal-close")
+  .addEventListener("click", () => howModal.close());
+howModal.addEventListener("click", (e) => {
+  if (e.target === howModal) howModal.close();
 });
 
 // Quality of life: Enter runs the row's command, typing clears its error state.
