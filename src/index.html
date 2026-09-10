@@ -18,7 +18,10 @@
       <div class="body">
         <div class="intro">
           <p class="line"><span class="prompt">$</span> node linked-list.js</p>
-          <h1>Singly Linked List</h1>
+          <div class="intro-head">
+            <h1>Singly Linked List</h1>
+            <button class="how-btn" id="btn-how">how it works</button>
+          </div>
           <p class="desc">
             Append, prepend, insert, remove and query nodes — the state below
             updates live as you run each command.
@@ -141,6 +144,20 @@
 
         <div id="log" class="log" aria-live="polite"></div>
       </div>
+
+      <dialog id="how-modal" class="how-modal">
+        <div class="how-modal-header">
+          <span id="how-modal-title">How it works</span>
+          <button
+            class="how-modal-close"
+            id="how-modal-close"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+        <pre class="how-modal-code"><code id="how-modal-code"></code></pre>
+      </dialog>
     </main>
   </body>
 </html>
