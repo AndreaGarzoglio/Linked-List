@@ -1,32 +1,85 @@
 import { LinkedList } from "./index.js";
 
+const STORAGE_KEY = "linked-list-state";
+
 const list = new LinkedList();
 
 const listState = document.getElementById("list-state");
-const queryResult = document.getElementById("query-result");
-const errorMsg = document.getElementById("error-msg");
+const log = document.getElementById("log");
+
+function toArray() {
+  const result = [];
+  let current = list.head;
+  while (current !== null) {
+    result.push(current.value);
+    current = current.nextNode;
+  }
+  return result;
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toArray()));
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    JSON.parse(raw).forEach((v) => list.append(v));
+  } catch {
+    // ignore corrupt storage
+  }
+}
+
+const typingTimers = new WeakMap();
+
+function typeWriter(el, text, { speed = 22, onTick } = {}) {
+  clearInterval(typingTimers.get(el));
+
+  const textSpan = document.createElement("span");
+  const cursorSpan = document.createElement("span");
+  cursorSpan.className = "cursor";
+  el.replaceChildren(textSpan, cursorSpan);
+
+  let i = 0;
+  const timer = setInterval(() => {
+    textSpan.textContent += text[i];
+    i += 1;
+    onTick?.();
+    if (i >= text.length) clearInterval(timer);
+  }, speed);
+  typingTimers.set(el, timer);
+}
+
+const MAX_LOG_LINES = 6;
+
+function logLine(text, type = "ok") {
+  const line = document.createElement("div");
+  line.className = type === "error" ? "log-line error" : "log-line";
+  log.appendChild(line);
+
+  while (log.children.length > MAX_LOG_LINES) {
+    log.removeChild(log.firstElementChild);
+  }
+
+  typeWriter(line, text, { onTick: () => (log.scrollTop = log.scrollHeight) });
+  log.scrollTop = log.scrollHeight;
+}
 
 function updateState() {
   const s = list.toString();
-  listState.textContent = s === "" ? "null" : s;
+  typeWriter(listState, s === "" ? "null" : s);
 }
 
 function showQuery(label, value) {
-  queryResult.textContent = `${label}: ${value}`;
-  queryResult.classList.remove("hidden");
-  errorMsg.classList.add("hidden");
+  logLine(`${label}: ${value}`);
 }
 
-function showError(msg) {
-  errorMsg.textContent = msg;
-  errorMsg.classList.remove("hidden");
-  queryResult.classList.add("hidden");
-  setTimeout(() => errorMsg.classList.add("hidden"), 3000);
-}
-
-function clearFeedback() {
-  queryResult.classList.add("hidden");
-  errorMsg.classList.add("hidden");
+function showError(msg, invalidIds = []) {
+  logLine(msg, "error");
+  invalidIds.forEach((id) =>
+    document.getElementById(id).classList.add("invalid"),
+  );
 }
 
 function val(id) {
@@ -41,55 +94,64 @@ function clear(id) {
 
 document.getElementById("btn-append").addEventListener("click", () => {
   const v = val("append-val");
-  if (!v) return showError("Enter a value.");
+  if (!v) return showError("append: enter a value.", ["append-val"]);
   list.append(v);
   clear("append-val");
   updateState();
-  clearFeedback();
+  saveState();
+  logLine(`append("${v}")`);
 });
 
 document.getElementById("btn-prepend").addEventListener("click", () => {
   const v = val("prepend-val");
-  if (!v) return showError("Enter a value.");
+  if (!v) return showError("prepend: enter a value.", ["prepend-val"]);
   list.prepend(v);
   clear("prepend-val");
   updateState();
-  clearFeedback();
+  saveState();
+  logLine(`prepend("${v}")`);
 });
 
 document.getElementById("btn-insert").addEventListener("click", () => {
   const v = val("insert-val");
   const i = num("insert-index");
-  if (!v || isNaN(i)) return showError("Enter an index and a value.");
+  const invalid = [];
+  if (isNaN(i)) invalid.push("insert-index");
+  if (!v) invalid.push("insert-val");
+  if (invalid.length)
+    return showError("insertAt: enter an index and a value.", invalid);
   try {
     list.insertAt(i, v);
     clear("insert-val");
     clear("insert-index");
     updateState();
-    clearFeedback();
+    saveState();
+    logLine(`insertAt(${i}, "${v}")`);
   } catch (e) {
-    showError(e.message);
+    showError(e.message, invalid);
   }
 });
 
 document.getElementById("btn-remove").addEventListener("click", () => {
   const i = num("remove-index");
-  if (isNaN(i)) return showError("Enter an index.");
+  if (isNaN(i)) return showError("removeAt: enter an index.", ["remove-index"]);
   try {
     list.removeAt(i);
     clear("remove-index");
     updateState();
-    clearFeedback();
+    saveState();
+    logLine(`removeAt(${i})`);
   } catch (e) {
-    showError(e.message);
+    showError(e.message, ["remove-index"]);
   }
 });
 
 document.getElementById("btn-pop").addEventListener("click", () => {
-  if (list.size() === 0) return showError("List is empty.");
-  list.pop();
+  if (list.size() === 0) return showError("pop: list is empty.");
+  const popped = list.pop();
   updateState();
-  clearFeedback();
+  saveState();
+  logLine(`pop() → "${popped}"`);
 });
 
 document.getElementById("btn-size").addEventListener("click", () => {
@@ -97,26 +159,38 @@ document.getElementById("btn-size").addEventListener("click", () => {
 });
 
 document.getElementById("btn-tail").addEventListener("click", () => {
-  showQuery("tail()", list.tail() ?? "List is empty");
+  showQuery("tail()", list.tail() ?? "list is empty");
 });
 
 document.getElementById("btn-at").addEventListener("click", () => {
   const i = num("at-index");
-  if (isNaN(i)) return showError("Enter an index.");
+  if (isNaN(i)) return showError("at: enter an index.", ["at-index"]);
   const result = list.at(i);
-  showQuery(`at(${i})`, result !== undefined ? result : "Index out of bounds");
+  showQuery(`at(${i})`, result !== undefined ? result : "index out of bounds");
 });
 
 document.getElementById("btn-contains").addEventListener("click", () => {
   const v = val("contains-val");
-  if (!v) return showError("Enter a value.");
+  if (!v) return showError("contains: enter a value.", ["contains-val"]);
   showQuery(`contains("${v}")`, list.contains(v));
 });
 
 document.getElementById("btn-find").addEventListener("click", () => {
   const v = val("find-val");
-  if (!v) return showError("Enter a value.");
+  if (!v) return showError("findIndex: enter a value.", ["find-val"]);
   showQuery(`findIndex("${v}")`, list.findIndex(v));
 });
 
+// Quality of life: Enter runs the row's command, typing clears its error state.
+document.querySelectorAll(".cmd-row input").forEach((input) => {
+  input.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    input.closest(".cmd-row").querySelector("button.run").click();
+  });
+  input.addEventListener("input", () => input.classList.remove("invalid"));
+});
+
+loadState();
 updateState();
+document.getElementById("append-val").focus();
