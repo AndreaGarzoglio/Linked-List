@@ -8,80 +8,140 @@
   </head>
 
   <body>
-    <div class="layout">
-      <div class="header">
-        <span class="badge">Data Structure</span>
-        <h1>Linked List</h1>
-        <p class="description">
-          Interact with a singly linked list. Add, remove, and query nodes in
-          real time.
-        </p>
+    <main class="terminal">
+      <div class="titlebar">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="path">Andrea Garzoglio: ~/linked-list</span>
       </div>
 
-      <div class="state-card">
-        <p class="label">Current List</p>
-        <div id="list-state" class="state-box">null</div>
-      </div>
+      <div class="body">
+        <div class="intro">
+          <p class="line"><span class="prompt">$</span> node linked-list.js</p>
+          <h1>Singly Linked List</h1>
+          <p class="desc">
+            Append, prepend, insert, remove and query nodes — the state below
+            updates live as you run each command.
+          </p>
+        </div>
 
-      <div class="panels">
-        <div class="panel">
-          <p class="label">Mutate</p>
-          <div class="control-group">
-            <button id="btn-append">Append</button>
-            <input id="append-val" type="text" placeholder="Value" />
+        <div class="state-row">
+          <span class="prompt">&gt;</span>
+          <div id="list-state" class="state-value">null</div>
+        </div>
+
+        <div class="rule"></div>
+
+        <div class="panes">
+          <div class="pane">
+            <p class="pane-label">mutate</p>
+
+            <div class="cmd-row">
+              <label for="append-val">append</label>
+              <div class="fields">
+                <input id="append-val" type="text" placeholder="value" />
+              </div>
+              <button id="btn-append" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label for="prepend-val">prepend</label>
+              <div class="fields">
+                <input id="prepend-val" type="text" placeholder="value" />
+              </div>
+              <button id="btn-prepend" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label for="insert-index">insert at</label>
+              <div class="fields">
+                <input
+                  id="insert-index"
+                  type="number"
+                  placeholder="index"
+                  min="0"
+                  class="narrow"
+                />
+                <input id="insert-val" type="text" placeholder="value" />
+              </div>
+              <button id="btn-insert" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label for="remove-index">remove at</label>
+              <div class="fields">
+                <input
+                  id="remove-index"
+                  type="number"
+                  placeholder="index"
+                  min="0"
+                  class="narrow"
+                />
+              </div>
+              <button id="btn-remove" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label>pop head</label>
+              <div class="fields"></div>
+              <button id="btn-pop" class="run danger">run</button>
+            </div>
           </div>
-          <div class="control-group">
-            <button id="btn-prepend">Prepend</button>
-            <input id="prepend-val" type="text" placeholder="Value" />
-          </div>
-          <div class="control-group">
-            <button id="btn-insert">Insert At</button>
-            <input
-              id="insert-index"
-              type="number"
-              placeholder="Index"
-              min="0"
-            />
-            <input id="insert-val" type="text" placeholder="Value" />
-          </div>
-          <div class="control-group">
-            <button id="btn-remove">Remove At</button>
-            <input
-              id="remove-index"
-              type="number"
-              placeholder="Index"
-              min="0"
-            />
-          </div>
-          <div class="control-group">
-            <button id="btn-pop" class="btn-danger">Pop head</button>
+
+          <div class="pane-divider"></div>
+
+          <div class="pane">
+            <p class="pane-label">query</p>
+
+            <div class="cmd-row">
+              <label for="at-index">at</label>
+              <div class="fields">
+                <input
+                  id="at-index"
+                  type="number"
+                  placeholder="index"
+                  min="0"
+                  class="narrow"
+                />
+              </div>
+              <button id="btn-at" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label for="contains-val">contains</label>
+              <div class="fields">
+                <input id="contains-val" type="text" placeholder="value" />
+              </div>
+              <button id="btn-contains" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label for="find-val">find index</label>
+              <div class="fields">
+                <input id="find-val" type="text" placeholder="value" />
+              </div>
+              <button id="btn-find" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label>size</label>
+              <div class="fields"></div>
+              <button id="btn-size" class="run">run</button>
+            </div>
+
+            <div class="cmd-row">
+              <label>tail</label>
+              <div class="fields"></div>
+              <button id="btn-tail" class="run">run</button>
+            </div>
           </div>
         </div>
 
-        <div class="panel">
-          <p class="label">Query</p>
-          <div class="control-group">
-            <button id="btn-at">At</button>
-            <input id="at-index" type="number" placeholder="Index" min="0" />
-          </div>
-          <div class="control-group">
-            <button id="btn-contains">Contains</button>
-            <input id="contains-val" type="text" placeholder="Value" />
-          </div>
-          <div class="control-group">
-            <button id="btn-find">Find Index</button>
-            <input id="find-val" type="text" placeholder="Value" />
-          </div>
-          <div class="control-group">
-            <button id="btn-size">Size</button>
-          </div>
-          <div class="control-group">
-            <button id="btn-tail">Tail</button>
-          </div>
-          <div id="query-result" class="query-result hidden"></div>
-        </div>
+        <div class="rule"></div>
+
+        <div id="log" class="log" aria-live="polite"></div>
       </div>
-      <div id="error-msg" class="error-msg hidden"></div>
-    </div>
+    </main>
   </body>
 </html>
