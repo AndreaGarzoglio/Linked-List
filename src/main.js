@@ -71,6 +71,11 @@ function updateState() {
   typeWriter(listState, s === "" ? "null" : s);
 }
 
+function persist() {
+  updateState();
+  saveState();
+}
+
 function showQuery(label, value) {
   logLine(`${label}: ${value}`);
 }
@@ -97,8 +102,7 @@ document.getElementById("btn-append").addEventListener("click", () => {
   if (!v) return showError("append: enter a value.", ["append-val"]);
   list.append(v);
   clear("append-val");
-  updateState();
-  saveState();
+  persist();
   logLine(`append("${v}")`);
 });
 
@@ -107,8 +111,7 @@ document.getElementById("btn-prepend").addEventListener("click", () => {
   if (!v) return showError("prepend: enter a value.", ["prepend-val"]);
   list.prepend(v);
   clear("prepend-val");
-  updateState();
-  saveState();
+  persist();
   logLine(`prepend("${v}")`);
 });
 
@@ -124,8 +127,7 @@ document.getElementById("btn-insert").addEventListener("click", () => {
     list.insertAt(i, v);
     clear("insert-val");
     clear("insert-index");
-    updateState();
-    saveState();
+    persist();
     logLine(`insertAt(${i}, "${v}")`);
   } catch (e) {
     showError(e.message, invalid);
@@ -138,8 +140,7 @@ document.getElementById("btn-remove").addEventListener("click", () => {
   try {
     list.removeAt(i);
     clear("remove-index");
-    updateState();
-    saveState();
+    persist();
     logLine(`removeAt(${i})`);
   } catch (e) {
     showError(e.message, ["remove-index"]);
@@ -149,8 +150,7 @@ document.getElementById("btn-remove").addEventListener("click", () => {
 document.getElementById("btn-pop").addEventListener("click", () => {
   if (list.size() === 0) return showError("pop: list is empty.");
   const popped = list.pop();
-  updateState();
-  saveState();
+  persist();
   logLine(`pop() → "${popped}"`);
 });
 

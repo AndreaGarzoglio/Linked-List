@@ -16,4 +16,17 @@ export default [
       ...js.configs.recommended.rules,
     },
   },
+  {
+    files: ["src/**/*.test.js"],
+    languageOptions: {
+      globals: globals.jest,
+    },
+  },
+  {
+    files: ["src/__mocks__/**/*.js"],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: "commonjs",
+    },
+  },
 ];
