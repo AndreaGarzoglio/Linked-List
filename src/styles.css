@@ -531,3 +531,79 @@ button.run.danger:hover {
     animation: none;
   }
 }
+
+/* ── Large screens: the card stays comfortably readable instead of
+   floating tiny in the middle of the page ── */
+@media (min-width: 1100px) {
+  .terminal {
+    max-width: 1000px;
+  }
+
+  .path,
+  .intro .line {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .desc {
+    font-size: 15px;
+    max-width: 560px;
+  }
+
+  .how-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .how-modal {
+    width: min(760px, 92vw);
+  }
+
+  .how-modal-header {
+    font-size: 14px;
+  }
+
+  .how-modal-code {
+    font-size: 14px;
+  }
+
+  .state-row {
+    font-size: 17px;
+  }
+
+  .pane-label {
+    font-size: 14px;
+  }
+
+  .cmd-row label {
+    flex-basis: 100px;
+    font-size: 15px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    font-size: 15px;
+    padding: 8px 10px;
+  }
+
+  input.narrow {
+    max-width: 80px;
+    flex-basis: 80px;
+  }
+
+  button.run {
+    font-size: 15px;
+  }
+
+  .log:empty::before {
+    font-size: 14px;
+  }
+
+  .log-line {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+}
